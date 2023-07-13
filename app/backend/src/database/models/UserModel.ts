@@ -14,9 +14,9 @@ InferCreationAttributes<User>> {
   declare username: string;
 
   declare role: string;
-  
+
   declare email: string;
-  
+
   declare password: string;
 }
 
@@ -48,6 +48,5 @@ User.init({
   modelName: 'users',
   timestamps: false,
 });
-
 
 export default User;
