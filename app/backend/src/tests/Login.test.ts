@@ -7,7 +7,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import User from '../../src/database/models/UserModel';
 import { user, validLogin, invalidEmail, invalidPassword, notFoundEmail, notPassword, notKeyEmail } from './mocks/user.mocks';
-import JwtUtils from '../utils/JwtUtils';
+// import JwtUtils from '../utils/JwtUtils';
 
 chai.use(chaiHttp);
 
