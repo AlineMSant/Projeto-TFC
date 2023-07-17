@@ -98,7 +98,6 @@ describe('Login/token testes', () => {
     it('Deve fazer o login com token valido', async function () {
       sinon.stub(User, 'findOne').resolves(user as User);
       sinon.stub(JwtUtils.prototype, 'verify').returns(user);
-      const token = '123456eeee'
 
       const response = await chai.request(app)
       .get('/login/role')
