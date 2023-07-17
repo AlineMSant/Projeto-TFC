@@ -2,11 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import Email from '../validations/Email';
 import { ILogin } from '../Interfaces/users/IUser';
 import JwtUtils from '../utils/JwtUtils';
-import UserService from '../services/UserService';
 
 class Validations {
   private static passwordMinLength = 6;
-  private static userService = new UserService();
 
   static validateLogin(req: Request, res: Response, next: NextFunction): Response | void {
     const { email, password } = req.body as ILogin;
