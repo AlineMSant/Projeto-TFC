@@ -12,4 +12,10 @@ authRouter.post(
   (req, res) => authController.login(req, res),
 );
 
+authRouter.get(
+  '/role',
+  Validations.validateToken,
+  (req, res) => authController.getUserRole(req, res),
+);
+
 export default authRouter;

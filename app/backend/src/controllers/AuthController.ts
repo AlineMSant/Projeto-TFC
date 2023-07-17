@@ -3,8 +3,14 @@ import { Request, Response } from 'express';
 import JwtUtils from '../utils/JwtUtils';
 import { ILogin } from '../Interfaces/users/IUser';
 import UserModel from '../models/UserModel';
+import UserService from '../services/UserService';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
 export default class AuthController {
+  constructor(
+    private userService = new UserService(),
+  ) { }
+
   private jwtUtils = new JwtUtils();
 
   private model: UserModel = new UserModel();
@@ -30,5 +36,17 @@ export default class AuthController {
     return res.status(200).json({
       token,
     });
+  }
+
+  async getUserRole(req: Request, res: Response): Promise<Response> {
+    const { id } = res.locals.decoded;
+
+    const serviceResponse = await this.userService.getById(Number(id));
+
+    if (serviceResponse.status !== 'SUCCESSFUL') {
+      return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
+    }
+
+    return res.status(200).json({ role: serviceResponse.data.role });
   }
 }

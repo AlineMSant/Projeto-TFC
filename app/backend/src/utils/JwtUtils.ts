@@ -7,4 +7,8 @@ export default class JwtUtils {
   sign(payload: Identifiable): string {
     return jwt.sign(payload, this.jwtSecret);
   }
+
+  verify(token: string) {
+    return jwt.verify(token, this.jwtSecret);
+  }
 }
