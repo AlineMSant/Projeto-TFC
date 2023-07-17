@@ -6,7 +6,6 @@ import {
   CreationOptional,
 } from 'sequelize';
 import db from '.';
-// import Match from './MatchModel';
 
 class Team extends Model<InferAttributes<Team>,
 InferCreationAttributes<Team>> {
@@ -32,8 +31,5 @@ Team.init({
   timestamps: false,
   underscored: true,
 });
-
-// Team.hasMany(Match, { foreignKey: 'homeTeamId', as: 'matches' });
-// Team.hasMany(Match, { foreignKey: 'awayTeamId', as: 'matches' });
 
 export default Team;

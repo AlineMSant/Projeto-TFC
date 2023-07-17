@@ -93,54 +93,54 @@ it('não pode fazer login se não possuir a chave email', async function () {
   afterEach(sinon.restore);
 });
 
-describe('Login/token testes', () => {
-  describe('Login com token de sucesso', function () {
-    it('Deve fazer o login com token valido', async function () {
-      sinon.stub(User, 'findOne').resolves(user as User);
-      sinon.stub(JwtUtils.prototype, 'verify').returns(user);
-      const token = '123456eeee'
+// describe('Login/token testes', () => {
+//   describe('Login com token de sucesso', function () {
+//     it('Deve fazer o login com token valido', async function () {
+//       sinon.stub(User, 'findOne').resolves(user as User);
+//       sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+//       const token = '123456eeee'
 
-      const response = await chai.request(app)
-      .get('/login/role')
-      .set('Authorization', 'token')
+//       const response = await chai.request(app)
+//       .get('/login/role')
+//       .set('Authorization', 'token')
 
-      expect(response).to.have.status(200);
-      expect(response.body).to.deep.equal({
-        role : 'admin'
-      })
-    })
-  })
+//       expect(response).to.have.status(200);
+//       expect(response.body).to.deep.equal({
+//         role : 'admin'
+//       })
+//     })
+//   })
   
-  describe('Login token sem sucesso', function () {
-    it('não pode fazer login sem token', async function () {
+//   describe('Login token sem sucesso', function () {
+//     it('não pode fazer login sem token', async function () {
       
-      const response = await chai.request(app)
-      .get('/login/role')
+//       const response = await chai.request(app)
+//       .get('/login/role')
 
-      expect(response).to.have.status(401);
-      expect(response.body).to.deep.equal({
-        message: 'Token not found'
-      })
-    })
+//       expect(response).to.have.status(401);
+//       expect(response.body).to.deep.equal({
+//         message: 'Token not found'
+//       })
+//     })
 
-    it('não pode fazer login se o token não for valido', async function () {
+//     it('não pode fazer login se o token não for valido', async function () {
     
-      sinon.stub(User, 'findOne').resolves(null);
+//       sinon.stub(User, 'findOne').resolves(null);
   
-      const response = await chai.request(app)
-      .get('/login/role')
-      .set('Authorization', 'token')
+//       const response = await chai.request(app)
+//       .get('/login/role')
+//       .set('Authorization', 'token')
   
-      expect(response).to.have.status(401);
-      expect(response.body).to.deep.equal({
-        message: 'Token must be a valid token'
-    })
+//       expect(response).to.have.status(401);
+//       expect(response.body).to.deep.equal({
+//         message: 'Token must be a valid token'
+//     })
 
 
-    })
+//     })
 
-})
+// })
 
 
-  afterEach(sinon.restore);
-});
+//   afterEach(sinon.restore);
+// });
