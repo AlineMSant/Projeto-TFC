@@ -6,8 +6,15 @@ export default class MatchController {
     private matchService = new MatchService(),
   ) {}
 
-  public async getAllTeams(_req: Request, res: Response) {
+  public async getAllTeams(req: Request, res: Response) {
+    const inProgress = req.query.inProgress as string;
+
+    if (inProgress) {
+      const serviceResponseSearch = await this.matchService.search(inProgress);
+      return res.status(200).json(serviceResponseSearch.data);
+    }
+
     const serviceResponse = await this.matchService.getAllMatches();
-    res.status(200).json(serviceResponse.data);
+    return res.status(200).json(serviceResponse.data);
   }
 }

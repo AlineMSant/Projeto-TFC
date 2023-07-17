@@ -15,4 +15,18 @@ export default class MatchModel implements IMatchModel {
       matches
     ));
   }
+
+  async findByQuery(q: string): Promise<IMatch[]> {
+    // conforme mentoria, aqui é tranformado em boolean automaticamente para poder retornar corretamente
+    const bool = q === 'true';
+
+    const dbData = await this.model.findAll({
+      include: [{ model: Team, as: 'homeTeam', attributes: { exclude: ['id'] } },
+        { model: Team, as: 'awayTeam', attributes: { exclude: ['id'] } }],
+      where: { inProgress: bool },
+    });
+    return dbData.map((matches) => (
+      matches
+    ));
+  }
 }
