@@ -7,6 +7,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import User from '../../src/database/models/UserModel';
 import { user, validLogin, invalidEmail, invalidPassword, notFoundEmail, notPassword, notKeyEmail } from './mocks/user.mocks';
+import JwtUtils from '../utils/JwtUtils';
 
 chai.use(chaiHttp);
 
@@ -87,6 +88,59 @@ it('não pode fazer login se não possuir a chave email', async function () {
       message: 'All fields must be filled',
     })
 })
+
+
+  afterEach(sinon.restore);
+});
+
+describe('Login/token testes', () => {
+  describe('Login com token de sucesso', function () {
+    it('Deve fazer o login com token valido', async function () {
+      sinon.stub(User, 'findOne').resolves(user as User);
+      sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+      const token = '123456eeee'
+
+      const response = await chai.request(app)
+      .get('/login/role')
+      .set('Authorization', 'token')
+
+      expect(response).to.have.status(200);
+      expect(response.body).to.deep.equal({
+        role : 'admin'
+      })
+    })
+  })
+  
+  describe('Login token sem sucesso', function () {
+    it('não pode fazer login sem token', async function () {
+      
+      const response = await chai.request(app)
+      .get('/login/role')
+
+      expect(response).to.have.status(401);
+      expect(response.body).to.deep.equal({
+        message: 'Token not found'
+      })
+    })
+
+    it('não pode fazer login se o token não for valido', async function () {
+    
+      sinon.stub(User, 'findOne').resolves(null);
+  
+      const response = await chai.request(app)
+      .get('/login/role')
+      .set('Authorization', 'token')
+  
+      expect(response).to.have.status(401);
+      expect(response.body).to.deep.equal({
+        message: 'Token must be a valid token'
+    })
+
+
+    })
+
+})
+
 
   afterEach(sinon.restore);
 });
