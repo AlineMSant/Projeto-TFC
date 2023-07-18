@@ -8,7 +8,7 @@ export default class UserService {
     private userModel: IUserModel = new UserModel(),
   ) {}
 
-  public async getById(id: number): Promise<ServiceResponse<IUser>> {
+  public async findById(id: number): Promise<ServiceResponse<IUser>> {
     const user = await this.userModel.findById(id);
     if (!user) return { status: 'NOT_FOUND', data: { message: 'User not found' } };
     const { username, role, email, password } = user as IUser;

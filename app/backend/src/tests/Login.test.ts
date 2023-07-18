@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import User from '../../src/database/models/UserModel';
+import SequelizeUser from '../../src/database/models/SequelizeUser';
 import { user, validLogin, invalidEmail, invalidPassword, notFoundEmail, notPassword, notKeyEmail } from './mocks/user.mocks';
 import JwtUtils from '../utils/JwtUtils';
 
@@ -14,12 +14,11 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe('Login testes', () => {
-  describe('Login de sucesso', function () {
     it('Deve fazer o login com credenciais validas', async function () {
       sinon.stub(bcrypt, 'compareSync').returns(true);
       
       
-      sinon.stub(User, 'findOne').resolves(user as User);
+      sinon.stub(SequelizeUser, 'findOne').resolves(user as SequelizeUser);
       
       const response = await chai.request(app)
         .post('/login').send(validLogin)
@@ -27,9 +26,7 @@ describe('Login testes', () => {
       expect(response).to.have.status(200);
       expect(response.body).to.haveOwnProperty('token');
     })
-  })
 
-  describe('Login sem sucesso', function () {
     it('não pode fazer login se o email não tiver formado válido', async function () {
       
       const response = await chai.request(app)
@@ -53,7 +50,7 @@ describe('Login testes', () => {
     })
 
     it('não pode fazer login se o email não for encontrado', async function () {
-      sinon.stub(User, 'findOne').resolves(null);
+      sinon.stub(SequelizeUser, 'findOne').resolves(null);
       const response = await chai.request(app)
         .post('/login')
         .send(notFoundEmail)
@@ -62,13 +59,13 @@ describe('Login testes', () => {
         message: 'Invalid email or password'
       })
     })
-  })
+
 
   it('não pode fazer login se a senha for invalida', async function () {
     sinon.stub(bcrypt, 'compareSync').returns(false);
       
       
-    sinon.stub(User, 'findOne').resolves(user as User);
+    sinon.stub(SequelizeUser, 'findOne').resolves(user as SequelizeUser);
     
     const response = await chai.request(app)
       .post('/login').send(notPassword)
@@ -94,9 +91,8 @@ it('não pode fazer login se não possuir a chave email', async function () {
 });
 
 describe('Login/token testes', () => {
-  describe('Login com token de sucesso', function () {
     it('Deve fazer o login com token valido', async function () {
-      sinon.stub(User, 'findOne').resolves(user as User);
+      sinon.stub(SequelizeUser, 'findOne').resolves(user as SequelizeUser);
       sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
       const response = await chai.request(app)
@@ -108,9 +104,7 @@ describe('Login/token testes', () => {
         role : 'admin'
       })
     })
-  })
-  
-  describe('Login token sem sucesso', function () {
+
     it('não pode fazer login sem token', async function () {
       
       const response = await chai.request(app)
@@ -135,9 +129,6 @@ describe('Login/token testes', () => {
         message: 'Token must be a valid token'
     })
   })
-
-})
-
 
   afterEach(sinon.restore);
 });
