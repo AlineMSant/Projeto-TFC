@@ -2,6 +2,7 @@ import MatchModel from '../models/MatchModel';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { ServiceResponse, ServiceMessage } from '../Interfaces/ServiceResponse';
+import { NewEntity } from '../Interfaces';
 
 export default class MatchService {
   constructor(
@@ -50,5 +51,15 @@ export default class MatchService {
         data: { message: `There are no updates to perform in Match ${id}` } };
     }
     return { status: 'SUCCESSFUL', data: { message: 'Updated' } };
+  }
+
+  public async create(match: NewEntity<IMatch>): Promise<ServiceResponse<IMatch>> {
+    const newData = {
+      ...match,
+      inProgress: true,
+    };
+
+    const newMatch = await this.matchModel.create(newData);
+    return { status: 'SUCCESSFUL', data: newMatch };
   }
 }
