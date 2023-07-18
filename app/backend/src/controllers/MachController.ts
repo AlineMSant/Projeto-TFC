@@ -7,7 +7,7 @@ export default class MatchController {
     private matchService = new MatchService(),
   ) {}
 
-  public async getAllMatches(req: Request, res: Response) {
+  public async findAll(req: Request, res: Response) {
     const inProgress = req.query.inProgress as string;
 
     if (inProgress) {
@@ -15,7 +15,7 @@ export default class MatchController {
       return res.status(200).json(serviceResponseSearch.data);
     }
 
-    const serviceResponse = await this.matchService.getAllMatches();
+    const serviceResponse = await this.matchService.findAll();
     return res.status(200).json(serviceResponse.data);
   }
 
@@ -30,10 +30,10 @@ export default class MatchController {
     return res.status(200).json(serviceResponse.data);
   }
 
-  public async updateMatch(req: Request, res: Response): Promise<Response> {
+  public async update(req: Request, res: Response): Promise<Response> {
     const id = Number(req.params.id);
     const { homeTeamGoals, awayTeamGoals } = req.body;
-    const serviceResponse = await this.matchService.updateMatches(id, homeTeamGoals, awayTeamGoals);
+    const serviceResponse = await this.matchService.update(id, homeTeamGoals, awayTeamGoals);
 
     if (serviceResponse.status !== 'SUCCESSFUL') {
       return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);

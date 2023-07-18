@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import Match from '../database/models/MatchModel';
+import SequelizeMatch from '../database/models/SequelizeMatch';
 
 import { matches, inProgressTrue, match, sendData } from './mocks/matches.mocks';
 import { user } from './mocks/user.mocks'
@@ -16,7 +16,7 @@ const { expect } = chai;
 
 describe('Matches testes', () => {
   it('deve retornar todos os matches na rota get /matches', async function() {
-    sinon.stub(Match, 'findAll').resolves(matches as any);
+    sinon.stub(SequelizeMatch, 'findAll').resolves(matches as any);
 
     const { status, body } = await chai.request(app).get('/matches');
 
@@ -25,7 +25,7 @@ describe('Matches testes', () => {
   });
 
   it('deve retornar matches com inProgress = false quando usar uma query', async function() {
-    sinon.stub(Match, 'findAll').resolves(matches as any);
+    sinon.stub(SequelizeMatch, 'findAll').resolves(matches as any);
 
     const { status, body } = await chai.request(app).get('/matches?inProgress=false');
 
@@ -34,7 +34,7 @@ describe('Matches testes', () => {
   });
 
   it('deve retornar matches com inProgress = true quando usar uma query', async function() {
-    sinon.stub(Match, 'findAll').resolves(inProgressTrue as any);
+    sinon.stub(SequelizeMatch, 'findAll').resolves(inProgressTrue as any);
 
     const { status, body } = await chai.request(app).get('/matches?inProgress=true');
 
@@ -43,8 +43,8 @@ describe('Matches testes', () => {
   });
 
   it('deve retornar finalizar uma partida pelo id', async function() {
-    sinon.stub(Match, 'update').resolves([1] as any);
-    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(SequelizeMatch, 'update').resolves([1] as any);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(match as any);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
 
@@ -57,7 +57,7 @@ describe('Matches testes', () => {
   });
 
   it('não deve encontrar um id valido para atualizar', async function() {
-    sinon.stub(Match, 'findByPk').resolves(null);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(null);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
 
@@ -70,8 +70,8 @@ describe('Matches testes', () => {
   });
 
   it('deve dar conflito de update para finalizar uma partida', async function() {
-    sinon.stub(Match, 'update').resolves([0] as any);
-    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(SequelizeMatch, 'update').resolves([0] as any);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(match as any);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
 
@@ -85,8 +85,8 @@ describe('Matches testes', () => {
 
 
   it('deve dar update com sucesso de uma partida por id', async function() {
-    sinon.stub(Match, 'update').resolves([1] as any);
-    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(SequelizeMatch, 'update').resolves([1] as any);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(match as any);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
     const { status, body } = await chai.request(app)
@@ -99,7 +99,7 @@ describe('Matches testes', () => {
   });
 
   it('não deve encontrar um id valido para atualizar Goals de uma partida', async function() {
-    sinon.stub(Match, 'findByPk').resolves(null);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(null);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
 
@@ -113,8 +113,8 @@ describe('Matches testes', () => {
   });
 
   it('deve dar conflito de update para atualizar uma partida', async function() {
-    sinon.stub(Match, 'update').resolves([0] as any);
-    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(SequelizeMatch, 'update').resolves([0] as any);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(match as any);
     sinon.stub(JwtUtils.prototype, 'verify').returns(user);
 
 

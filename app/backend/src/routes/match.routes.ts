@@ -6,7 +6,7 @@ const matchController = new MatchController();
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => matchController.getAllMatches(req, res));
+router.get('/', (req: Request, res: Response) => matchController.findAll(req, res));
 
 router.patch(
   '/:id/finish',
@@ -17,7 +17,7 @@ router.patch(
 router.patch(
   '/:id',
   Validations.validateToken,
-  (req: Request, res: Response) => matchController.updateMatch(req, res),
+  (req: Request, res: Response) => matchController.update(req, res),
 );
 
 export default router;

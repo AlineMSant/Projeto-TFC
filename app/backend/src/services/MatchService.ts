@@ -8,13 +8,13 @@ export default class MatchService {
     private matchModel: IMatchModel = new MatchModel(),
   ) {}
 
-  public async getAllMatches(): Promise<ServiceResponse<IMatch[]>> {
+  public async findAll(): Promise<ServiceResponse<IMatch[]>> {
     const allMatches = await this.matchModel.findAll();
     return { status: 'SUCCESSFUL', data: allMatches };
   }
 
   public async search(q: string): Promise<ServiceResponse<IMatch[]>> {
-    const allMatchesBySearch = await this.matchModel.findByQuery(q);
+    const allMatchesBySearch = await this.matchModel.search(q);
     return { status: 'SUCCESSFUL', data: allMatchesBySearch };
   }
 
@@ -32,7 +32,7 @@ export default class MatchService {
     return { status: 'SUCCESSFUL', data: { message: 'Finished' } };
   }
 
-  public async updateMatches(
+  public async update(
     id: number,
     homeTeamGoals: number,
     awayTeamGoals: number,

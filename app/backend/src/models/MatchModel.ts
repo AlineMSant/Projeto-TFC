@@ -1,11 +1,11 @@
-import Match from '../database/models/MatchModel';
+import SequelizeMatch from '../database/models/SequelizeMatch';
 import SequelizeTeam from '../database/models/SequelizeTeam';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { NewEntity } from '../Interfaces';
 
 export default class MatchModel implements IMatchModel {
-  private model = Match;
+  private model = SequelizeMatch;
 
   async findAll(): Promise<IMatch[]> {
     const dbData = await this.model.findAll({
@@ -17,7 +17,7 @@ export default class MatchModel implements IMatchModel {
     ));
   }
 
-  async findByQuery(q: string): Promise<IMatch[]> {
+  async search(q: string): Promise<IMatch[]> {
     // conforme mentoria, aqui é tranformado em boolean automaticamente para poder retornar corretamente
     const bool = q === 'true';
 
