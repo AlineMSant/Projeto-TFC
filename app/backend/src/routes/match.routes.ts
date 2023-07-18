@@ -23,6 +23,7 @@ router.patch(
 router.post(
   '/',
   Validations.validateToken,
+  Validations.validateTeams,
   (req: Request, res: Response) => matchController.create(req, res),
 );
 

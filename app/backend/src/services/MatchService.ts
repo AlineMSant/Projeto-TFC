@@ -53,7 +53,14 @@ export default class MatchService {
     return { status: 'SUCCESSFUL', data: { message: 'Updated' } };
   }
 
-  public async create(match: NewEntity<IMatch>): Promise<ServiceResponse<IMatch>> {
+  public async create(match: NewEntity<IMatch>): Promise<ServiceResponse<IMatch | ServiceMessage>> {
+    const homeTeamFound = await this.matchModel.findById(match.homeTeamId);
+    const awayTeamFound = await this.matchModel.findById(match.awayTeamId);
+
+    if (!homeTeamFound || !awayTeamFound) {
+      return { status: 'NOT_FOUND', data: { message: 'There is no team with such id!' } };
+    }
+
     const newData = {
       ...match,
       inProgress: true,
