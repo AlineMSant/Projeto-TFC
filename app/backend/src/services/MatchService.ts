@@ -22,14 +22,7 @@ export default class MatchService {
     const matchFound = await this.matchModel.findById(id);
     if (!matchFound) return { status: 'NOT_FOUND', data: { message: `Match ${id} not found` } };
 
-    const finishedMatch = {
-      id,
-      homeTeamId: matchFound.homeTeamId,
-      homeTeamGoals: matchFound.homeTeamGoals,
-      awayTeamId: matchFound.awayTeamId,
-      awayTeamGoals: matchFound.awayTeamGoals,
-      inProgress: false,
-    };
+    const finishedMatch = { inProgress: false };
 
     const updatedMatch = await this.matchModel.update(id, finishedMatch);
     if (!updatedMatch) {
