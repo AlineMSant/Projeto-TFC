@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import Team from '../database/models/TeamModel';
+import SequelizeTeam from '../database/models/SequelizeTeam';
 
 import { teams, team } from './mocks/team.mocks';
 
@@ -13,8 +13,8 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 describe('Teams test', () => {
-  it('deve retornar todos os temes, na rota GET/teams', async function() {
-    sinon.stub(Team, 'findAll').resolves(teams as any);
+  it('deve retornar todos os times, na rota GET/teams', async function() {
+    sinon.stub(SequelizeTeam, 'findAll').resolves(teams as any);
 
     const { status, body } = await chai.request(app).get('/teams');
 
@@ -23,7 +23,7 @@ describe('Teams test', () => {
   });
 
   it('deve retornar um time por id na rota GET/teams/1', async function() {
-    sinon.stub(Team, 'findByPk').resolves(team as any);
+    sinon.stub(SequelizeTeam, 'findByPk').resolves(team as any);
 
     const { status, body } = await chai.request(app).get('/teams/1');
 
@@ -32,7 +32,7 @@ describe('Teams test', () => {
   });
 
   it('não deve retornar um time quando não encontrar', async function() {
-    sinon.stub(Team, 'findByPk').resolves(null);
+    sinon.stub(SequelizeTeam, 'findByPk').resolves(null);
 
     const { status, body } = await chai.request(app).get('/teams/1');
 

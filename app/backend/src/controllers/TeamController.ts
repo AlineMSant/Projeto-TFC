@@ -7,20 +7,20 @@ export default class TeamController {
     private teamService = new TeamService(),
   ) {}
 
-  public async getAllTeams(_req: Request, res: Response) {
-    const serviceResponse = await this.teamService.getAllTeams();
-    res.status(200).json(serviceResponse.data);
+  public async findAll(_req: Request, res: Response) {
+    const serviceResponse = await this.teamService.findAll();
+    return res.status(200).json(serviceResponse.data);
   }
 
-  public async getTeamById(req: Request, res: Response) {
+  public async findById(req: Request, res: Response) {
     const { id } = req.params;
 
-    const serviceResponse = await this.teamService.getTeamsById(Number(id));
+    const serviceResponse = await this.teamService.findById(Number(id));
 
     if (serviceResponse.status === 'NOT_FOUND') {
       return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
     }
 
-    res.status(200).json(serviceResponse.data);
+    return res.status(200).json(serviceResponse.data);
   }
 }

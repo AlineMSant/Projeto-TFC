@@ -1,5 +1,5 @@
 import Match from '../database/models/MatchModel';
-import Team from '../database/models/TeamModel';
+import SequelizeTeam from '../database/models/SequelizeTeam';
 import { IMatch } from '../Interfaces/matches/IMatch';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { NewEntity } from '../Interfaces';
@@ -9,8 +9,8 @@ export default class MatchModel implements IMatchModel {
 
   async findAll(): Promise<IMatch[]> {
     const dbData = await this.model.findAll({
-      include: [{ model: Team, as: 'homeTeam', attributes: { exclude: ['id'] } },
-        { model: Team, as: 'awayTeam', attributes: { exclude: ['id'] } }],
+      include: [{ model: SequelizeTeam, as: 'homeTeam', attributes: { exclude: ['id'] } },
+        { model: SequelizeTeam, as: 'awayTeam', attributes: { exclude: ['id'] } }],
     });
     return dbData.map((matches) => (
       matches
@@ -22,8 +22,8 @@ export default class MatchModel implements IMatchModel {
     const bool = q === 'true';
 
     const dbData = await this.model.findAll({
-      include: [{ model: Team, as: 'homeTeam', attributes: { exclude: ['id'] } },
-        { model: Team, as: 'awayTeam', attributes: { exclude: ['id'] } }],
+      include: [{ model: SequelizeTeam, as: 'homeTeam', attributes: { exclude: ['id'] } },
+        { model: SequelizeTeam, as: 'awayTeam', attributes: { exclude: ['id'] } }],
       where: { inProgress: bool },
     });
     return dbData.map((matches) => (

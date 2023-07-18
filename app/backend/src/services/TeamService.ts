@@ -8,12 +8,12 @@ export default class TeamService {
     private teamModel: ITeamModel = new TeamModel(),
   ) {}
 
-  public async getAllTeams(): Promise<ServiceResponse<ITeam[]>> {
+  public async findAll(): Promise<ServiceResponse<ITeam[]>> {
     const allTeams = await this.teamModel.findAll();
     return { status: 'SUCCESSFUL', data: allTeams };
   }
 
-  public async getTeamsById(id: number): Promise<ServiceResponse<ITeam>> {
+  public async findById(id: number): Promise<ServiceResponse<ITeam>> {
     const team = await this.teamModel.findById(id);
     if (!team) return { status: 'NOT_FOUND', data: { message: 'Team not found' } };
     return { status: 'SUCCESSFUL', data: team };
