@@ -6,7 +6,7 @@ const matchController = new MatchController();
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => matchController.getAllTeams(req, res));
+router.get('/', (req: Request, res: Response) => matchController.getAllMatches(req, res));
 
 router.patch(
   '/:id/finish',

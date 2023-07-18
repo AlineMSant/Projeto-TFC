@@ -7,7 +7,7 @@ export default class MatchController {
     private matchService = new MatchService(),
   ) {}
 
-  public async getAllTeams(req: Request, res: Response) {
+  public async getAllMatches(req: Request, res: Response) {
     const inProgress = req.query.inProgress as string;
 
     if (inProgress) {
