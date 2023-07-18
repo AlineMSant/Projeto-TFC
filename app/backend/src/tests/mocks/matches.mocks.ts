@@ -43,8 +43,14 @@ const match = {
   }
 }
 
+const sendData = {
+  homeTeamGoals: 3,
+  awayTeamGoals: 1
+}
+
 export {
   matches,
   inProgressTrue,
   match,
+  sendData,
 };

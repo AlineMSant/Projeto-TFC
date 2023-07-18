@@ -6,7 +6,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import Match from '../database/models/MatchModel';
 
-import { matches, inProgressTrue, match } from './mocks/matches.mocks';
+import { matches, inProgressTrue, match, sendData } from './mocks/matches.mocks';
 import { user } from './mocks/user.mocks'
 import JwtUtils from '../utils/JwtUtils';
 
@@ -78,6 +78,50 @@ describe('Matches testes', () => {
     const { status, body } = await chai.request(app)
     .patch('/matches/3/finish')
     .set('Authorization', 'token');
+
+    expect(status).to.equal(409);
+    expect(body.message).to.deep.equal('There are no updates to perform in Match 3');
+  });
+
+
+  it('deve dar update com sucesso de uma partida por id', async function() {
+    sinon.stub(Match, 'update').resolves([1] as any);
+    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/48')
+    .set('Authorization', 'token')
+    .send(sendData);
+
+    expect(status).to.equal(200);
+    expect(body.message).to.deep.equal('Updated');
+  });
+
+  it('não deve encontrar um id valido para atualizar Goals de uma partida', async function() {
+    sinon.stub(Match, 'findByPk').resolves(null);
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/0')
+    .set('Authorization', 'token')
+    .send(sendData);
+
+    expect(status).to.equal(404);
+    expect(body.message).to.deep.equal('Match 0 not found');
+  });
+
+  it('deve dar conflito de update para atualizar uma partida', async function() {
+    sinon.stub(Match, 'update').resolves([0] as any);
+    sinon.stub(Match, 'findByPk').resolves(match as any);
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+
+    const { status, body } = await chai.request(app)
+    .patch('/matches/3')
+    .set('Authorization', 'token')
+    .send(sendData);;
 
     expect(status).to.equal(409);
     expect(body.message).to.deep.equal('There are no updates to perform in Match 3');
