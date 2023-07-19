@@ -6,7 +6,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import SequelizeMatch from '../database/models/SequelizeMatch';
 
-import { matches, inProgressTrue, match, sendData } from './mocks/matches.mocks';
+import { matches, inProgressTrue, match, sendData, sendDataCreate, matchCreated, sendEqualTeams, sendInvalidId } from './mocks/matches.mocks';
 import { user } from './mocks/user.mocks'
 import JwtUtils from '../utils/JwtUtils';
 
@@ -125,6 +125,45 @@ describe('Matches testes', () => {
 
     expect(status).to.equal(409);
     expect(body.message).to.deep.equal('There are no updates to perform in Match 3');
+  });
+
+  it('deve criar uma nova partida com sucesso', async function() {
+    sinon.stub(SequelizeMatch, 'create').resolves(matchCreated as any);
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+
+    const { status, body } = await chai.request(app)
+    .post('/matches')
+    .set('Authorization', 'token')
+    .send(sendDataCreate);;
+
+    expect(status).to.equal(201);
+    expect(body).to.deep.equal(matchCreated);
+  });
+
+  it('não deve criar nova partida com homeTeam e awayTeam iguais', async function() {
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+    const { status, body } = await chai.request(app)
+    .post('/matches')
+    .set('Authorization', 'token')
+    .send(sendEqualTeams);;
+
+    expect(status).to.equal(422);
+    expect(body.message).to.deep.equal('It is not possible to create a match with two equal teams');
+  });
+
+  it('deve retornar erro quando não encontrar um time', async function() {
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(null);
+    sinon.stub(JwtUtils.prototype, 'verify').returns(user);
+
+    const { status, body } = await chai.request(app)
+    .post('/matches')
+    .set('Authorization', 'token')
+    .send(sendInvalidId);;
+
+    expect(status).to.equal(404);
+    expect(body.message).to.deep.equal('There is no team with such id!');
   });
 
   afterEach(sinon.restore);
