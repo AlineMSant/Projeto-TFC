@@ -187,7 +187,7 @@ export function sumTotalsHome(matches: IMatch[][], allTeams: ITeam[]): ILeaderbo
     goalsFavor: goalsHome(array),
     goalsOwn: goalsAway(array),
     goalsBalance: goalsHome(array) - goalsAway(array),
-    efficiency: (totalPointsHome(array) / (totalGames(array) * 3)) * 100,
+    efficiency: ((totalPointsHome(array) / (totalGames(array) * 3)) * 100).toFixed(2),
   }));
 
   return retorno;
@@ -204,7 +204,7 @@ export function sumTotalsAway(matches: IMatch[][], allTeams: ITeam[]): ILeaderbo
     goalsFavor: goalsAway(array),
     goalsOwn: goalsHome(array),
     goalsBalance: goalsAway(array) - goalsHome(array),
-    efficiency: (totalPointsAway(array) / (totalGames(array) * 3)) * 100,
+    efficiency: ((totalPointsAway(array) / (totalGames(array) * 3)) * 100).toFixed(2),
   }));
 
   return retorno;
@@ -224,7 +224,8 @@ export function sumTotals(
     goalsFavor: totalGoalsFavor(array),
     goalsOwn: totalGoalsOwn(array),
     goalsBalance: totalGoalsFavor(array) - totalGoalsOwn(array),
-    efficiency: (totalPoints(array) / (totalAllGames(allLeaderboard, array[0].name) * 3)) * 100,
+    efficiency: ((totalPoints(array) / (totalAllGames(allLeaderboard, array[0].name) * 3)) * 100)
+      .toFixed(2),
   }));
   return retorno;
 }
