@@ -77,6 +77,8 @@ export default function sumTotals(matches: IMatch[][], allTeams: ITeam[]): ILead
     totalLosses: totalLosses(array),
     goalsFavor: goalsFavor(array),
     goalsOwn: goalsOwn(array),
+    goalsBalance: goalsFavor(array) - goalsOwn(array),
+    efficiency: (totalPoints(array) / (totalGames(array) * 3)) * 100,
   }));
 
   return retorno;

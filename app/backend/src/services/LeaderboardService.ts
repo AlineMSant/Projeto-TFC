@@ -12,6 +12,16 @@ export default class LeaderboardService {
     private teamModel: ITeamModel = new TeamModel(),
   ) {}
 
+  public static sortLeaderboard(leaderboard: ILeaderboard[]): ILeaderboard[] {
+    leaderboard.sort((a, b) =>
+      b.totalPoints - a.totalPoints
+      || b.totalVictories - a.totalVictories
+      || b.goalsBalance - a.goalsBalance
+      || b.goalsFavor - a.goalsFavor);
+
+    return leaderboard;
+  }
+
   public async findAllHome(): Promise<ServiceResponse<ILeaderboard[]>> {
     const allTeams = await this.teamModel.findAll();
     const searchAllNotInProgress = await this.matchModel.search('false');
@@ -21,6 +31,8 @@ export default class LeaderboardService {
 
     const totals = sumTotals(arrayMatchesByTeamId, allTeams);
 
-    return { status: 'SUCCESSFUL', data: totals };
+    const result = LeaderboardService.sortLeaderboard(totals);
+
+    return { status: 'SUCCESSFUL', data: result };
   }
 }
