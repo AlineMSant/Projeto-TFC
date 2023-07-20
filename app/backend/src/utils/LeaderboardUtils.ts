@@ -2,13 +2,26 @@ import { IMatch } from '../Interfaces/matches/IMatch';
 import { ITeam } from '../Interfaces/teams/ITeam';
 import { ILeaderboard } from '../Interfaces/learderboard/ILeaderboard';
 
-function name(match: IMatch[], allTeams: ITeam[]): string {
+function totalGames(match: IMatch[]): number {
+  return match.length;
+}
+
+function goalsHome(match: IMatch[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += match[i].homeTeamGoals;
+  }
+  return sum;
+}
+
+function nameHome(match: IMatch[], allTeams: ITeam[]): string {
   const homeTeam = match[0];
   const team = allTeams.filter((teamObj) => teamObj.id === homeTeam.homeTeamId);
   return team[0].teamName;
 }
 
-function totalPoints(match: IMatch[]): number {
+function totalPointsHome(match: IMatch[]): number {
   let sum = 0;
 
   for (let i = 0; i < match.length; i += 1) {
@@ -18,11 +31,7 @@ function totalPoints(match: IMatch[]): number {
   return sum;
 }
 
-function totalGames(match: IMatch[]): number {
-  return match.length;
-}
-
-function totalVictories(match: IMatch[]): number {
+function totalVictoriesHome(match: IMatch[]): number {
   let sum = 0;
 
   for (let i = 0; i < match.length; i += 1) {
@@ -31,7 +40,7 @@ function totalVictories(match: IMatch[]): number {
   return sum;
 }
 
-function totalDraws(match: IMatch[]): number {
+function totalDrawsHome(match: IMatch[]): number {
   let sum = 0;
 
   for (let i = 0; i < match.length; i += 1) {
@@ -40,7 +49,7 @@ function totalDraws(match: IMatch[]): number {
   return sum;
 }
 
-function totalLosses(match: IMatch[]): number {
+function totalLossesHome(match: IMatch[]): number {
   let sum = 0;
 
   for (let i = 0; i < match.length; i += 1) {
@@ -49,16 +58,7 @@ function totalLosses(match: IMatch[]): number {
   return sum;
 }
 
-function goalsFavor(match: IMatch[]): number {
-  let sum = 0;
-
-  for (let i = 0; i < match.length; i += 1) {
-    sum += match[i].homeTeamGoals;
-  }
-  return sum;
-}
-
-function goalsOwn(match: IMatch[]): number {
+function goalsAway(match: IMatch[]): number {
   let sum = 0;
 
   for (let i = 0; i < match.length; i += 1) {
@@ -67,18 +67,78 @@ function goalsOwn(match: IMatch[]): number {
   return sum;
 }
 
-export default function sumTotals(matches: IMatch[][], allTeams: ITeam[]): ILeaderboard[] {
+function nameAway(match: IMatch[], allTeams: ITeam[]): string {
+  const awayTeam = match[0];
+  const team = allTeams.filter((teamObj) => teamObj.id === awayTeam.awayTeamId);
+  return team[0].teamName;
+}
+
+function totalPointsAway(match: IMatch[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    if (Number(match[i].awayTeamGoals) > Number(match[i].homeTeamGoals)) sum += 3;
+    if (Number(match[i].awayTeamGoals) === Number(match[i].homeTeamGoals)) sum += 1;
+  }
+  return sum;
+}
+
+function totalVictoriesAway(match: IMatch[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    if (Number(match[i].awayTeamGoals) > Number(match[i].homeTeamGoals)) sum += 1;
+  }
+  return sum;
+}
+
+function totalDrawsAway(match: IMatch[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    if (Number(match[i].awayTeamGoals) === Number(match[i].homeTeamGoals)) sum += 1;
+  }
+  return sum;
+}
+
+function totalLossesAway(match: IMatch[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    if (Number(match[i].awayTeamGoals) < Number(match[i].homeTeamGoals)) sum += 1;
+  }
+  return sum;
+}
+
+export function sumTotalsHome(matches: IMatch[][], allTeams: ITeam[]): ILeaderboard[] {
   const retorno = matches.map((array) => ({
-    name: name(array, allTeams),
-    totalPoints: totalPoints(array),
+    name: nameHome(array, allTeams),
+    totalPoints: totalPointsHome(array),
     totalGames: totalGames(array),
-    totalVictories: totalVictories(array),
-    totalDraws: totalDraws(array),
-    totalLosses: totalLosses(array),
-    goalsFavor: goalsFavor(array),
-    goalsOwn: goalsOwn(array),
-    goalsBalance: goalsFavor(array) - goalsOwn(array),
-    efficiency: (totalPoints(array) / (totalGames(array) * 3)) * 100,
+    totalVictories: totalVictoriesHome(array),
+    totalDraws: totalDrawsHome(array),
+    totalLosses: totalLossesHome(array),
+    goalsFavor: goalsHome(array),
+    goalsOwn: goalsAway(array),
+    goalsBalance: goalsHome(array) - goalsAway(array),
+    efficiency: (totalPointsHome(array) / (totalGames(array) * 3)) * 100,
+  }));
+
+  return retorno;
+}
+
+export function sumTotalsAway(matches: IMatch[][], allTeams: ITeam[]): ILeaderboard[] {
+  const retorno = matches.map((array) => ({
+    name: nameAway(array, allTeams),
+    totalPoints: totalPointsAway(array),
+    totalGames: totalGames(array),
+    totalVictories: totalVictoriesAway(array),
+    totalDraws: totalDrawsAway(array),
+    totalLosses: totalLossesAway(array),
+    goalsFavor: goalsAway(array),
+    goalsOwn: goalsHome(array),
+    goalsBalance: goalsAway(array) - goalsHome(array),
+    efficiency: (totalPointsAway(array) / (totalGames(array) * 3)) * 100,
   }));
 
   return retorno;
