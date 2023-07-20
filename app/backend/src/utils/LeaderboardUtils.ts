@@ -110,6 +110,72 @@ function totalLossesAway(match: IMatch[]): number {
   return sum;
 }
 
+function totalPoints(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].totalPoints);
+  }
+  return sum;
+}
+
+function totalAllGames(allLeaderboard: ILeaderboard[], teamName: string): number {
+  let sum = 0;
+
+  const arrayMatchTeam = allLeaderboard.filter((match) => match.name === teamName);
+  console.log(arrayMatchTeam);
+
+  for (let i = 0; i < arrayMatchTeam.length; i += 1) {
+    sum += Number(arrayMatchTeam[i].totalGames);
+  }
+  return sum;
+}
+
+function totalVictories(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].totalVictories);
+  }
+  return sum;
+}
+
+function totalDraws(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].totalDraws);
+  }
+  return sum;
+}
+
+function totalLosses(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].totalLosses);
+  }
+  return sum;
+}
+
+function totalGoalsFavor(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].goalsFavor);
+  }
+  return sum;
+}
+
+function totalGoalsOwn(match: ILeaderboard[]): number {
+  let sum = 0;
+
+  for (let i = 0; i < match.length; i += 1) {
+    sum += Number(match[i].goalsOwn);
+  }
+  return sum;
+}
+
 export function sumTotalsHome(matches: IMatch[][], allTeams: ITeam[]): ILeaderboard[] {
   const retorno = matches.map((array) => ({
     name: nameHome(array, allTeams),
@@ -141,5 +207,24 @@ export function sumTotalsAway(matches: IMatch[][], allTeams: ITeam[]): ILeaderbo
     efficiency: (totalPointsAway(array) / (totalGames(array) * 3)) * 100,
   }));
 
+  return retorno;
+}
+
+export function sumTotals(
+  arrayAllLeaderboard: ILeaderboard[][],
+  allLeaderboard: ILeaderboard[],
+): ILeaderboard[] {
+  const retorno = arrayAllLeaderboard.map((array) => ({
+    name: array[0].name,
+    totalPoints: totalPoints(array),
+    totalGames: totalAllGames(allLeaderboard, array[0].name),
+    totalVictories: totalVictories(array),
+    totalDraws: totalDraws(array),
+    totalLosses: totalLosses(array),
+    goalsFavor: totalGoalsFavor(array),
+    goalsOwn: totalGoalsOwn(array),
+    goalsBalance: totalGoalsFavor(array) - totalGoalsOwn(array),
+    efficiency: (totalPoints(array) / (totalAllGames(allLeaderboard, array[0].name) * 3)) * 100,
+  }));
   return retorno;
 }

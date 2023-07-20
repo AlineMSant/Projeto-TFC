@@ -4,7 +4,7 @@ import { ILeaderboard } from '../Interfaces/learderboard/ILeaderboard';
 import { IMatchModel } from '../Interfaces/matches/IMatchModel';
 import { ITeamModel } from '../Interfaces/teams/ITeamModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
-import { sumTotalsHome, sumTotalsAway } from '../utils/LeaderboardUtils';
+import { sumTotalsHome, sumTotalsAway, sumTotals } from '../utils/LeaderboardUtils';
 
 export default class LeaderboardService {
   constructor(
@@ -44,6 +44,30 @@ export default class LeaderboardService {
       .filter((match) => match.awayTeamId === team.id));
 
     const totals = sumTotalsAway(arrayMatchesByTeamId, allTeams);
+
+    const result = LeaderboardService.sortLeaderboard(totals);
+
+    return { status: 'SUCCESSFUL', data: result };
+  }
+
+  public async findAll(): Promise<ServiceResponse<ILeaderboard[]>> {
+    const allTeams = await this.teamModel.findAll();
+    const searchAllNotInProgress = await this.matchModel.search('false');
+
+    const arrayMatchesByTeamIdHome = allTeams.map((team) => searchAllNotInProgress
+      .filter((match) => match.homeTeamId === team.id));
+
+    const arrayMatchesByTeamIdAway = allTeams.map((team) => searchAllNotInProgress
+      .filter((match) => match.awayTeamId === team.id));
+
+    const totalsHome = sumTotalsHome(arrayMatchesByTeamIdHome, allTeams);
+    const totalsAway = sumTotalsAway(arrayMatchesByTeamIdAway, allTeams);
+
+    const allLeaderboard = [...totalsHome, ...totalsAway];
+    const arrayAllLeaderboard = allTeams.map((team) => allLeaderboard
+      .filter((match) => match.name === team.teamName));
+
+    const totals = sumTotals(arrayAllLeaderboard, allLeaderboard);
 
     const result = LeaderboardService.sortLeaderboard(totals);
 
